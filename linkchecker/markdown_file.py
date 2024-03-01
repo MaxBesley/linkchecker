@@ -2,6 +2,7 @@ from urllib.parse import urlparse
 from pprint import pprint
 from link import Link
 import re
+from tqdm import tqdm
 
 
 class MarkdownFile:
@@ -31,7 +32,7 @@ class MarkdownFile:
         if debug:
             print('~~~~~~~~~~~~~~~ FOR DEBUGGING ~~~~~~~~~~~~~~~')
             print('file =', path)
-            print('link count is', len(link_objs))
+            print('unique link count is', len(link_objs))
             for i in range(len(link_objs)):
                 print(link_objs[i])
             print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', end='\n\n')
@@ -45,25 +46,27 @@ class MarkdownFile:
         regex = r'((https?):((//)|(\\\\))+([\w\d:#@%/;$~_?\+-=\\\.&](#!)?)*)'
         urls = [tup[0] for tup in re.findall(regex, text)]
         if debug:
-            print('~~~~~~~~~~~~~~~ After parsing ~~~~~~~~~~~~~~~')
+            print('~~~~~~~~~~~~~~~ AFTER PARSING ~~~~~~~~~~~~~~~')
+            print('total link count is', len(urls))
             pprint(urls)
-            print('\t\tlen(urls) is', len(urls))
             print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', end='\n\n')
         return urls
 
 
     def print_results(self):
-        if not self.links:
-            print('No links found')
-            return
 
-        print(f"<> Checking links in {self.path}")
-        print(f"   {len(self.links)} unique link{'s' if len(self.links) != 1 else ''} found")
+        print(f"<> Searching for links in {self.path}")
+        if self.links:
+            print(f"   {len(self.links)} unique link{'s' if len(self.links) != 1 else ''} found")
+        else:
+            print('   No links found')
+            return
 
         # note: currently for large files the program stalls here
         print('   Doing networking stuff...\n')
-        for l in self.links:
+        for l in tqdm(self.links):
             l.find_status()
+        print()
 
         alive_links = [] ; dead_links = []
         for l in self.links:
@@ -86,4 +89,4 @@ class MarkdownFile:
 
 
     def __str__(self):
-        pass
+        return f"path = {self.path}"

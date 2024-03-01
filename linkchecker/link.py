@@ -35,6 +35,7 @@ class Link:
     def parse_hostname(self, url):
         parser = urlparse(url)
         host = parser.netloc or parser.path.split("/")[0]
+        # host = parser.hostname  # or this instead???
         return host
 
     def __str__(self):

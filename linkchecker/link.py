@@ -27,7 +27,7 @@ class Link:
                 case timeout():
                     self.status = "Timed out"
         except Exception as e:
-            print("Some other exception...\n")
+            print("Some other exception...")
             print(e)
         finally:
             conn.close()

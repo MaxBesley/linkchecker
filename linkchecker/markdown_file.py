@@ -23,11 +23,11 @@ class MarkdownFile:
         urls = self.parse_out_urls(text, debug)
 
         # filter out all invalid urls
-        urls = list(filter(lambda url: urlparse(url).scheme != '', urls))
+        urls = [url for url in urls if urlparse(url).scheme != '']
         # remove duplicate urls
         urls = list(dict.fromkeys(urls))
 
-        link_objs = list(map(lambda url: Link(url), urls))
+        link_objs = [Link(url) for url in urls]
 
         if debug:
             print('~~~~~~~~~~~~~~~ FOR DEBUGGING ~~~~~~~~~~~~~~~')
@@ -84,6 +84,8 @@ class MarkdownFile:
             print('Dead links:')
             for l in dead_links:
                 print(f"- ({l.status}) {l.url}")
+        else:
+            print('---No dead links---')
 
         return
 

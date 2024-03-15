@@ -22,10 +22,12 @@ class MarkdownFile:
 
         urls = self.parse_out_urls(text, debug)
 
-        # filter out all invalid urls
+        # filter out invalid urls
         urls = [url for url in urls if urlparse(url).scheme != '']
-        # remove duplicate urls
+        # remove duplicates
         urls = list(dict.fromkeys(urls))
+        # filter out local connections
+        urls = [url for url in urls if 'http://localhost' not in url]
 
         link_objs = [Link(url) for url in urls]
 
